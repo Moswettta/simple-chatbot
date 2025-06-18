@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chatbot</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons (optional, but good for send button) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #e2e8f0; /* Tailwind gray-200 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .chat-container {
+            background-color: #ffffff;
+            border-radius: 12px; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            width: 100%;
+            max-width: 420px; /* sm:max-w-md, compact for mobile */
+            height: 80vh; /* Fixed height for chat area */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Ensures messages don't overflow */
+        }
+        .chat-messages {
+            flex-grow: 1; /* Takes up available space */
+            padding: 1rem; /* p-4 */
+            overflow-y: auto; /* Scrollable */
+            background-color: #f8fafc; /* gray-50 */
+            border-bottom: 1px solid #e2e8f0; /* gray-200 */
+        }
+        .message {
+            max-width: 80%; /* Limit message bubble width */
+            padding: 0.75rem 1rem; /* py-3 px-4 */
+            border-radius: 1.25rem; /* rounded-2xl */
+            margin-bottom: 0.75rem; /* mb-3 */
+            word-wrap: break-word; /* Prevents long words from breaking layout */
+        }
+        .message.user {
+            background-color: #4f46e5; /* indigo-600 */
+            color: #ffffff;
+            margin-left: auto; /* Align right */
+            border-bottom-right-radius: 0.25rem; /* rounded-br-sm */
+        }
+        .message.bot {
+            background-color: #e0e7ff; /* indigo-100 */
+            color: #1e293b; /* slate-800 */
+            margin-right: auto; /* Align left */
+            border-bottom-left-radius: 0.25rem; /* rounded-bl-sm */
+        }
+        .chat-input {
+            display: flex;
+            padding: 1rem; /* p-4 */
+            border-top: 1px solid #e2e8f0; /* gray-200 */
+        }
+        .chat-input input {
+            flex-grow: 1;
+            border: 1px solid #cbd5e1; /* slate-300 */
+            border-radius: 9999px; /* rounded-full */
+            padding: 0.75rem 1.25rem; /* py-3 px-5 */
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .chat-input input:focus {
+            border-color: #6366f1; /* indigo-500 */
+        }
+        .chat-input button {
+            background-color: #4f46e5; /* indigo-600 */
+            color: #ffffff;
+            border-radius: 9999px; /* rounded-full */
+            padding: 0.75rem 1.25rem; /* py-3 px-5 */
+            margin-left: 0.5rem; /* ml-2 */
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chat-input button:hover {
+            background-color: #4338ca; /* indigo-700 */
+            transform: scale(1.05);
+        }
+
+        /* Custom Message Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 350px;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Loading indicator styles */
+        .loading-dots {
+            display: inline-block;
+            position: relative;
+            width: 30px;
+            height: 10px;
+        }
+
+        .loading-dots div {
+            position: absolute;
+            top: 0;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4f46e5; /* indigo-600 */
+            animation-timing-function: cubic-bezier(0, 1, 1, 0);
+        }
+
+        .loading-dots div:nth-child(1) {
+            left: 0px;
+            animation: loading-dots1 0.6s infinite;
+        }
+
+        .loading-dots div:nth-child(2) {
+            left: 0px;
+            animation: loading-dots2 0.6s infinite;
+        }
+
+        .loading-dots div:nth-child(3) {
+            left: 16px;
+            animation: loading-dots3 0.6s infinite;
+        }
+
+        .loading-dots div:nth-child(4) {
+            left: 32px;
+            animation: loading-dots4 0.6s infinite;
+        }
+
+        @keyframes loading-dots1 {
+            0% {
+                transform: scale(0);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes loading-dots3 {
+            0% {
+                transform: scale(1);
+            }
+            100% {
+                transform: scale(0);
+            }
+        }
+
+        @keyframes loading-dots2 {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(16px);
+            }
+        }
+
+        @keyframes loading-dots4 {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(16px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-messages" id="chat-messages">
+            <!-- Initial bot message -->
+            <div class="message bot">Hello! I'm a simple chatbot powered by Google Gemini. How can I help you today?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
+            <button id="send-button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Custom Message Modal -->
+    <div id="messageModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-button" onclick="hideMessageModal()">&times;</span>
+            <p id="messageText" class="text-lg text-gray-800 mb-4"></p>
+            <button onclick="hideMessageModal()" class="bg-indigo-500 text-white py-2 px-5 rounded-full hover:bg-indigo-600 transition duration-300">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const messageModal = document.getElementById('messageModal');
+        const messageText = document.getElementById('messageText');
+
+        // Store chat history for the AI model
+        let chatHistory = [];
+
+        // Function to show custom alert message
+        function showMessage(message) {
+            messageText.textContent = message;
+            messageModal.classList.remove('hidden');
+            messageModal.style.display = 'flex'; // Ensure it's flex for centering
+        }
+
+        // Function to hide custom alert message
+        function hideMessageModal() {
+            messageModal.classList.add('hidden');
+        }
+
+        // Function to append messages to the chat window
+        function appendMessage(sender, text) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message', sender);
+            messageElement.innerHTML = text; // Use innerHTML for loading dots
+            chatMessages.appendChild(messageElement);
+            // Scroll to the latest message
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Function to simulate bot typing and respond using Gemini API
+        async function getBotResponse(userMessage) {
+            // Add user message to chat history
+            chatHistory.push({ role: "user", parts: [{ text: userMessage }] });
+
+            // Display "thinking..." message
+            const loadingMessageElement = document.createElement('div');
+            loadingMessageElement.classList.add('message', 'bot');
+            loadingMessageElement.innerHTML = `
+                <div class="loading-dots">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div> Thinking...
+            `;
+            chatMessages.appendChild(loadingMessageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+
+            try {
+                const payload = {
+                    contents: chatHistory
+                };
+                const apiKey = ""; // Canvas will automatically provide the API key here
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                // Remove the "thinking..." message
+                chatMessages.removeChild(loadingMessageElement);
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const botResponseText = result.candidates[0].content.parts[0].text;
+                    appendMessage('bot', botResponseText);
+                    chatHistory.push({ role: "model", parts: [{ text: botResponseText }] });
+                } else {
+                    appendMessage('bot', "I couldn't get a response. Please try again.");
+                    console.error("Gemini API returned an unexpected structure or no content:", result);
+                }
+
+            } catch (error) {
+                // Remove the "thinking..." message on error
+                chatMessages.removeChild(loadingMessageElement);
+                appendMessage('bot', "Oops! Something went wrong while connecting. Please try again later.");
+                console.error("Error calling Gemini API:", error);
+                showMessage("There was an error communicating with the AI. Please check your internet connection and try again.");
+            } finally {
+                userInput.disabled = false; // Re-enable input after bot responds
+                sendButton.disabled = false; // Re-enable send button
+                userInput.focus(); // Focus input for next message
+            }
+        }
+
+        // Function to handle sending messages
+        function sendMessage() {
+            const message = userInput.value.trim();
+            if (message === '') {
+                showMessage("Please type a message before sending.");
+                return;
+            }
+
+            appendMessage('user', message);
+            userInput.value = ''; // Clear input field
+            userInput.disabled = true; // Disable input while bot is "thinking"
+            sendButton.disabled = true; // Disable send button
+
+            getBotResponse(message);
+        }
+
+        // Event listeners
+        sendButton.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Ensure input is focused on load for convenience
+        window.onload = function() {
+            userInput.focus();
+        };
+
+        // Close message modal if clicked outside content
+        window.addEventListener('click', (event) => {
+            if (event.target == messageModal) {
+                hideMessageModal();
+            }
+        });
+    </script>
+</body>
+</html>
