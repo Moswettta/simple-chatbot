@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Benjamin Maosa Simple Chatbot</title>
+<title>Benjamin Maosa Smart CV Bot</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
     body { font-family:'Inter',sans-serif; background:#e2e8f0; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;}
-    .chat-container { background:#fff; border-radius:12px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); width:100%; max-width:420px; height:80vh; display:flex; flex-direction:column; overflow:hidden;}
+    .chat-container { background:#fff; border-radius:12px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); width:100%; max-width:450px; height:85vh; display:flex; flex-direction:column; overflow:hidden;}
     .chat-messages { flex-grow:1; padding:1rem; overflow-y:auto; background:#f8fafc; border-bottom:1px solid #e2e8f0;}
     .message { max-width:80%; padding:0.75rem 1rem; border-radius:1.25rem; margin-bottom:0.75rem; word-wrap:break-word; display:flex; align-items:flex-start;}
     .message span i { font-size:1.1rem; vertical-align:middle; margin-right:0.5rem;}
@@ -27,7 +27,7 @@
 <div class="chat-container">
     <div class="chat-messages" id="chat-messages"></div>
     <div class="chat-input">
-        <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
+        <input type="text" id="user-input" placeholder="Ask me anything..." autocomplete="off">
         <button id="send-button">Send</button>
     </div>
 </div>
@@ -37,6 +37,7 @@ const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
 
+// Full CV as a text block
 const fullCV = `
 BENJAMIN MAOSA MOSWETA
 P.O BOX 6566-00300, Nairobi, Kenya
@@ -62,69 +63,48 @@ EDUCATION
 - Bachelor of Business Information Technology, Mount Kenya University, Jan 2023 – May 2025
 - Diploma in Business Information Technology, Mount Kenya University, Jan 2021 – Sep 2022
 - Certificate in Business Information Technology, Mount Kenya University, May 2018 – Nov 2019
-- Kenya Certificate of Secondary Education (KCSE), Brightstar High School, 2013 – 2017
-- Kenya Certificate of Primary Education (KCPE), Solidarity Primary School, 2004 – 2012
+- KCSE, Brightstar High School, 2013 – 2017
+- KCPE, Solidarity Primary School, 2004 – 2012
 
-WHAT MY COURSE ENTAILS
-My BBIT course includes software development, database design, networking, systems analysis & design, project management, IT audit, IT security, business process integration & management information systems.
+MY COURSE CONTENT
+BBIT covers software development, database design, networking, systems analysis & design, project management, IT audit, security, business process integration & MIS.
 
 WORK EXPERIENCE
 - Junior IT Attachee, National Housing Corporation, Feb 2025 – May 2025
-  • Conducted database management, file tracking, data entry
-  • Provided first-level IT support, set up desktops, configured printers
-  • Performed system backups, preventive maintenance & troubleshooting
+  • Managed databases, handled file tracking, set up IT hardware, performed backups & troubleshooting
 - Junior IT Attachee, NHC, May 2022 – Aug 2022
-  • Supported 100+ users with IT issues, reduced downtime by 25%
-  • Coordinated with teams to improve turnaround by 35%
+  • Supported 100+ users, cut downtime by 25%, streamlined turnaround by 35%
 - IT & Marketing Attachee, APRT SACCO, Jan 2020 – Apr 2020
-  • Implemented SharePoint backups, reducing data loss by 30%
-  • Led IT procurement, trained 10+ staff, maintained server health
+  • Set up SharePoint backups (data loss ↓30%), handled procurement (cost ↓15%), trained staff, managed servers
 
 CERTIFICATIONS
-- Project Management Essentials – Cornerstone On Demand Foundation
+- Project Management Essentials (Cornerstone On Demand)
 
-PERSONAL DETAILS
-- Name: Benjamin Maosa Mosweta
-- Date of Birth: 30 Dec 1997
-- Nationality: Kenyan
-- Languages: English, Kiswahili
-
-PROFESSIONAL ATTRIBUTES
-- Strong analytical & problem-solving
-- Adaptable, self-motivated, collaborative team player
+PERSONAL
+- DOB: 30 Dec 1997 | Nationality: Kenyan | Languages: English, Kiswahili
 
 REFERENCES
-- Dr. Mwaniki Solomon (Deputy Director, MKU)
-- Yvonne Mwiti (HR, APRT SACCO)
-- Mr. M. Mauta (Managing Director, NHC)
-- Mrs. Martha Waswa (Colleague, NHC)
-- Mr. Clinton Mage (ICT Officer, NHC)
+- Dr. Mwaniki Solomon (MKU), Yvonne Mwiti (APRT), Mr. Mauta (NHC), Mrs. Waswa (NHC), Mr. Mage (NHC)
 `;
 
-const keywordMap = [
-    { keywords: ["full cv","full resume","all details"], response: () => fullCV },
-    { keywords: ["hello","hi","hey"], response: () => "Hello there! 👋 How can I assist you today?" },
-    { keywords: ["how are you","whats up"], response: () => "I'm an AI bot, always operational! 😄 What can I do for you?" },
-    { keywords: ["summary"], response: () => "I'm an IT professional skilled in backend dev, IT support, systems management & more. Type 'full cv' to see everything." },
-    { keywords: ["skill","skills","competencies"], response: () => "My core competencies: PHP, HTML, CSS, JavaScript, MySQL, networking, hardware/software maintenance, project coordination, and more." },
-    { keywords: ["education","study","course"], response: () => "I hold a BBIT Degree, Diploma & Certificate from Mount Kenya University. Ask 'what does your course entail'." },
-    { keywords: ["course entail","course content"], response: () => "My BBIT covers software development, database design, networking, systems analysis, IT audit, security & project management." },
-    { keywords: ["experience","work","job"], response: () => "Worked at National Housing Corporation & APRT SACCO handling IT support, database management, and staff training." },
-    { keywords: ["contact","email","phone"], response: () => "📧 Email: benjaminmosweta@gmail.com | ☎️ +254 798 458 270" },
-    { keywords: ["reference","referee"], response: () => "References: Dr. Mwaniki (MKU), Yvonne Mwiti (APRT), Mr. Mauta, Mrs. Waswa, Mr. Mage at NHC." },
-    { keywords: ["joke"], response: () => "Why did the computer keep freezing? Because it left its Windows open! 😂" }
+// Responses
+const responses = [
+    { patterns: ["hello","hi","hey"], replies: ["Hello there! 👋","Hi 👋, what's up?","Hey, how can I help you?"] },
+    { patterns: ["how are you","whats up"], replies: ["I'm doing great, always ready to assist you! 😄","I'm a bot so always online and happy! How can I help?"] },
+    { patterns: ["who are you","tell me about yourself"], replies: ["I'm Benjamin Maosa's interactive CV bot, here to answer anything about his skills, education, or experience."] },
+    { patterns: ["summary","profile"], replies: ["I'm an IT pro with expertise in PHP, JavaScript, MySQL, IT support & more. Ask for 'skills' or 'experience'!"] },
+    { patterns: ["skill","skills","competencies"], replies: ["Core skills include PHP, HTML, CSS, JS, MySQL, network troubleshooting, hardware/software maintenance."] },
+    { patterns: ["education","study","school"], replies: ["I hold a BBIT degree, plus diploma & certificate from Mount Kenya University. Want to know course details?"] },
+    { patterns: ["course entail","course content","what does your course"], replies: ["My BBIT covers software dev, databases, networking, systems design, project management, IT audit & security."] },
+    { patterns: ["experience","work","job"], replies: ["Worked at National Housing Corporation & APRT SACCO doing IT support, database admin & staff training."] },
+    { patterns: ["certification","certifications"], replies: ["Certified in Project Management Essentials by Cornerstone On Demand."] },
+    { patterns: ["reference","referee"], replies: ["References include Dr. Mwaniki (MKU), Yvonne Mwiti (APRT SACCO), Mr. Mauta, Mrs. Waswa & Mr. Mage at NHC."] },
+    { patterns: ["contact","email","phone","call"], replies: ["📧 benjaminmosweta@gmail.com | ☎️ +254 798 458 270"] },
+    { patterns: ["full cv","full resume","all details"], replies: [fullCV] },
+    { patterns: ["joke"], replies: ["Why did the computer freeze? Because it left its Windows open! 😂"] }
 ];
 
-function getResponse(message) {
-    const msg = message.toLowerCase();
-    for (let entry of keywordMap) {
-        if (entry.keywords.some(k => msg.includes(k))) {
-            return typeof entry.response === "function" ? entry.response() : entry.response;
-        }
-    }
-    return "🤔 I’m still learning. Try asking about my skills, work experience, or type 'full cv' to see everything.";
-}
-
+// Typing + send message functions
 function appendMessage(sender, text) {
     const msgDiv = document.createElement('div');
     msgDiv.classList.add('message', sender);
@@ -134,17 +114,41 @@ function appendMessage(sender, text) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
+function botReplyWithDelay(reply) {
+    const loading = document.createElement('div');
+    loading.classList.add('message','bot');
+    loading.innerHTML = '<span><i class="fas fa-robot"></i></span><em>Typing...</em>';
+    chatMessages.appendChild(loading);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    setTimeout(() => {
+        loading.remove();
+        appendMessage('bot', reply);
+    }, 700 + Math.random()*500); // random slight delay
+}
+
+function getBotResponse(input) {
+    const message = input.toLowerCase();
+    for (let entry of responses) {
+        if (entry.patterns.some(k => message.includes(k))) {
+            const reply = entry.replies[Math.floor(Math.random() * entry.replies.length)];
+            return reply;
+        }
+    }
+    return "🤔 Not sure about that. Try asking for 'skills', 'experience', or 'full CV'.";
+}
+
 function sendMessage() {
     const text = userInput.value.trim();
     if (!text) return;
     appendMessage('user', text);
     userInput.value = '';
     setTimeout(() => {
-        const reply = getResponse(text);
-        if(reply !== undefined) appendMessage('bot', reply);
+        const reply = getBotResponse(text);
+        botReplyWithDelay(reply);
     }, 400);
 }
 
+// Events
 sendButton.addEventListener('click', sendMessage);
 userInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
 </script>
