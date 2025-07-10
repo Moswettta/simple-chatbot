@@ -6,12 +6,15 @@
 <title>Maosa AI Chatbot</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
     body { font-family:'Inter',sans-serif; background:#e2e8f0; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;}
     .chat-container { background:#fff; border-radius:12px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); width:100%; max-width:420px; height:80vh; display:flex; flex-direction:column; overflow:hidden;}
     .chat-messages { flex-grow:1; padding:1rem; overflow-y:auto; background:#f8fafc; border-bottom:1px solid #e2e8f0;}
-    .message { max-width:80%; padding:0.75rem 1rem; border-radius:1.25rem; margin-bottom:0.75rem; word-wrap:break-word;}
-    .message.user {background:#4f46e5; color:#fff; margin-left:auto; border-bottom-right-radius:0.25rem;}
+    .message { max-width:80%; padding:0.75rem 1rem; border-radius:1.25rem; margin-bottom:0.75rem; word-wrap:break-word; display:flex; align-items:flex-start;}
+    .message span i { font-size:1.1rem; vertical-align:middle; margin-right:0.5rem;}
+    .message.user {background:#4f46e5; color:#fff; margin-left:auto; border-bottom-right-radius:0.25rem; flex-direction:row-reverse;}
+    .message.user span i { margin-left:0.5rem; margin-right:0;}
     .message.bot {background:#e0e7ff; color:#1e293b; margin-right:auto; border-bottom-left-radius:0.25rem;}
     .chat-input { display:flex; padding:1rem; border-top:1px solid #e2e8f0;}
     .chat-input input { flex-grow:1; border:1px solid #cbd5e1; border-radius:9999px; padding:0.75rem 1.25rem; outline:none;}
@@ -23,7 +26,7 @@
 <body>
 <div class="chat-container">
     <div class="chat-messages" id="chat-messages">
-        <div class="message bot">Hello! I'm Maosa's AI Assistant. Ask me about my education, skills, experience, or contacts.</div>
+        <div class="message bot"><span><i class="fas fa-robot"></i></span>Hello! I'm Maosa's AI Assistant. Ask me about my education, skills, experience, or contacts.</div>
     </div>
     <div class="chat-input">
         <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
@@ -36,7 +39,7 @@ const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
 
-// Your CV data stored as JSON
+// CV data
 const cvData = {
     name: "Benjamin Maosa Mosweta",
     email: "benjaminmosweta@gmail.com",
@@ -68,30 +71,48 @@ const cvData = {
     ]
 };
 
-// Simple matching based on keywords
+// Keywords mapping
+const keywordMap = [
+    { keywords: ["name", "who are you"], response: () => `My name is ${cvData.name}.` },
+    { keywords: ["email", "gmail"], response: () => `You can reach me at ${cvData.email}.` },
+    { keywords: ["phone", "mobile", "contact"], response: () => `My phone number is ${cvData.phone}.` },
+    { keywords: ["address", "live", "location"], response: () => `I live at ${cvData.address}.` },
+    { keywords: ["education", "school", "study", "degree", "diploma", "certificate"], response: () => 
+        `Here’s my education:<br>${cvData.education.join("<br>")}` },
+    { keywords: ["skill", "know", "competency"], response: () => 
+        `These are my core skills:<br>${cvData.skills.join(", ")}` },
+    { keywords: ["experience", "job", "work", "position"], response: () => 
+        `Here’s my work experience:<br>${cvData.experience.join("<br>")}` },
+    { keywords: ["reference", "referee"], response: () => 
+        `Here are my references:<br>${cvData.references.join("<br>")}` }
+];
+
+// Smart matching
 function getResponse(message) {
     const msg = message.toLowerCase();
-    if (msg.includes("name")) return `My name is ${cvData.name}.`;
-    if (msg.includes("email")) return `You can reach me at ${cvData.email}.`;
-    if (msg.includes("phone") || msg.includes("contact")) return `My phone is ${cvData.phone}.`;
-    if (msg.includes("address")) return `My address is ${cvData.address}.`;
-    if (msg.includes("education") || msg.includes("study")) return `Here's my education background:<br>${cvData.education.join("<br>")}`;
-    if (msg.includes("skill") || msg.includes("competencies")) return `These are my core skills:<br>${cvData.skills.join(", ")}`;
-    if (msg.includes("experience") || msg.includes("work")) return `Here’s my work experience:<br>${cvData.experience.join("<br>")}`;
-    if (msg.includes("reference")) return `Here are some of my references:<br>${cvData.references.join("<br>")}`;
-    return "Sorry, I couldn't understand that. Please ask about my education, skills, experience, or contacts.";
+    for (let entry of keywordMap) {
+        if (entry.keywords.some(k => msg.includes(k))) {
+            return entry.response();
+        }
+    }
+    return "Sorry, I didn't quite get that. Try asking about my education, skills, experience, or contacts.";
 }
 
-// Append messages to chat
+// Append message
 function appendMessage(sender, text) {
     const msgDiv = document.createElement('div');
     msgDiv.classList.add('message', sender);
-    msgDiv.innerHTML = text;
+    
+    const icon = sender === 'user' 
+        ? '<span><i class="fas fa-user"></i></span>'
+        : '<span><i class="fas fa-robot"></i></span>';
+        
+    msgDiv.innerHTML = icon + text;
     chatMessages.appendChild(msgDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Send message handler
+// Handle sending
 function sendMessage() {
     const text = userInput.value.trim();
     if (!text) return;
@@ -100,7 +121,7 @@ function sendMessage() {
     setTimeout(() => {
         const reply = getResponse(text);
         appendMessage('bot', reply);
-    }, 500); // simulate delay
+    }, 500);
 }
 
 sendButton.addEventListener('click', sendMessage);
