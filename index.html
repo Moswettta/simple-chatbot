@@ -26,7 +26,7 @@
 <body>
 <div class="chat-container">
     <div class="chat-messages" id="chat-messages">
-        <div class="message bot"><span><i class="fas fa-robot"></i></span>Hello! I'm Maosa's AI Assistant. Ask me about my education, skills, experience, or contacts.</div>
+        <div class="message bot"><span><i class="fas fa-robot"></i></span>Hello! I'm Maosa's AI Assistant 🤖<br>Ask me about my education, skills, experience, contacts, or request my CV PDF.</div>
     </div>
     <div class="chat-input">
         <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
@@ -35,11 +35,12 @@
 </div>
 
 <script>
+// === Chat setup ===
 const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
 
-// CV data
+// === Your CV Data ===
 const cvData = {
     name: "Benjamin Maosa Mosweta",
     email: "benjaminmosweta@gmail.com",
@@ -71,23 +72,25 @@ const cvData = {
     ]
 };
 
-// Keywords mapping
+// === Smart matching keywords ===
 const keywordMap = [
     { keywords: ["name", "who are you"], response: () => `My name is ${cvData.name}.` },
     { keywords: ["email", "gmail"], response: () => `You can reach me at ${cvData.email}.` },
     { keywords: ["phone", "mobile", "contact"], response: () => `My phone number is ${cvData.phone}.` },
     { keywords: ["address", "live", "location"], response: () => `I live at ${cvData.address}.` },
-    { keywords: ["education", "school", "study", "degree", "diploma", "certificate"], response: () => 
+    { keywords: ["education", "school", "study", "degree", "diploma", "certificate"], response: () =>
         `Here’s my education:<br>${cvData.education.join("<br>")}` },
-    { keywords: ["skill", "know", "competency"], response: () => 
+    { keywords: ["skill", "know", "competency"], response: () =>
         `These are my core skills:<br>${cvData.skills.join(", ")}` },
-    { keywords: ["experience", "job", "work", "position"], response: () => 
+    { keywords: ["experience", "job", "work", "position"], response: () =>
         `Here’s my work experience:<br>${cvData.experience.join("<br>")}` },
-    { keywords: ["reference", "referee"], response: () => 
-        `Here are my references:<br>${cvData.references.join("<br>")}` }
+    { keywords: ["reference", "referee"], response: () =>
+        `Here are my references:<br>${cvData.references.join("<br>")}` },
+    { keywords: ["cv", "resume", "pdf"], response: () =>
+        `Sure! You can <a href="https://moswettta.github.io/MaosaDevPortfolio/Maosa_CV.pdf" target="_blank" class="text-indigo-600 underline">click here to download my CV in PDF format</a>.` }
 ];
 
-// Smart matching
+// === Function to get response ===
 function getResponse(message) {
     const msg = message.toLowerCase();
     for (let entry of keywordMap) {
@@ -95,24 +98,22 @@ function getResponse(message) {
             return entry.response();
         }
     }
-    return "Sorry, I didn't quite get that. Try asking about my education, skills, experience, or contacts.";
+    return "Sorry, I didn't quite get that. Try asking about my education, skills, experience, contacts or say 'send me your CV'.";
 }
 
-// Append message
+// === Append message to chat ===
 function appendMessage(sender, text) {
     const msgDiv = document.createElement('div');
     msgDiv.classList.add('message', sender);
-    
-    const icon = sender === 'user' 
+    const icon = sender === 'user'
         ? '<span><i class="fas fa-user"></i></span>'
         : '<span><i class="fas fa-robot"></i></span>';
-        
     msgDiv.innerHTML = icon + text;
     chatMessages.appendChild(msgDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Handle sending
+// === Handle send ===
 function sendMessage() {
     const text = userInput.value.trim();
     if (!text) return;
@@ -124,6 +125,7 @@ function sendMessage() {
     }, 500);
 }
 
+// === Listeners ===
 sendButton.addEventListener('click', sendMessage);
 userInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
 </script>
