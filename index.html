@@ -26,7 +26,7 @@
 <body>
 <div class="chat-container">
     <div class="chat-messages" id="chat-messages">
-        <div class="message bot"><span><i class="fas fa-robot"></i></span>Hello! I'm Benjamin Maosa's AI CV Assistant 🤖<br>Ask me about his skills, education, work experience, or type <strong>"show full cv"</strong> to see everything.</div>
+        <div class="message bot"><span><i class="fas fa-robot"></i></span>Hello! I'm Benjamin Maosa's AI CV Assistant 🤖<br>Ask me about his skills, education, work experience, or say <strong>"full cv"</strong> to see all details.</div>
     </div>
     <div class="chat-input">
         <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
@@ -39,87 +39,81 @@ const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
 
-// Full CV Content
 const fullCV = `
-<strong>BENJAMIN MAOSA MOSWETA</strong><br>
-P.O BOX 6566-00300, Nairobi, Kenya<br>
-Mobile: +254 798 458 270 | Email: benjaminmosweta@gmail.com<br><br>
+BENJAMIN MAOSA MOSWETA
+P.O BOX 6566-00300, Nairobi, Kenya
+Mobile: +254 798 458 270 | Email: benjaminmosweta@gmail.com
 
-<strong>PROFESSIONAL SUMMARY</strong><br>
-Results-driven IT professional with a solid foundation in Business Information Technology. Skilled in backend development, IT support, and systems management with hands-on experience in corporate environments. Committed to driving efficiency and supporting organizational growth through technical expertise and problem-solving capabilities.<br><br>
+PROFESSIONAL SUMMARY
+Results-driven IT professional with a solid foundation in Business Information Technology. Skilled in backend development, IT support, and systems management with hands-on experience in corporate environments.
 
-<strong>CORE COMPETENCIES</strong><br>
-• PHP Backend Development<br>
-• Frontend Web Development (HTML, CSS, JavaScript)<br>
-• Databases (MySQL)<br>
-• Network Installation & Troubleshooting<br>
-• Computer Hardware & Software Maintenance<br>
-• Microsoft Office Suite<br>
-• Database Management<br>
-• Technical Support & Call Center Management<br>
-• Project Coordination & Documentation<br>
-• Sales and Marketing Support<br>
-• Excellent Communication & Interpersonal Skills<br><br>
+CORE COMPETENCIES
+- PHP Backend Development
+- Frontend Web Development (HTML, CSS, JavaScript)
+- Databases (MySQL)
+- Network Installation & Troubleshooting
+- Computer Hardware & Software Maintenance
+- Microsoft Office Suite
+- Database Management
+- Technical Support & Call Center Management
+- Project Coordination & Documentation
+- Sales and Marketing Support
+- Excellent Communication & Interpersonal Skills
 
-<strong>EDUCATION</strong><br>
-• Bachelor of Business Information Technology - Mount Kenya University (Jan 2023 – May 2025)<br>
-• Diploma in Business Information Technology - Mount Kenya University (Jan 2021 – Sep 2022)<br>
-• Certificate in Business Information Technology - Mount Kenya University (May 2018 – Nov 2019)<br>
-• KCSE - Brightstar High School (2013 – 2017)<br>
-• KCPE - Solidarity Primary School (2004 – 2012)<br><br>
+EDUCATION
+- Bachelor of Business Information Technology, Mount Kenya University, Jan 2023 – May 2025
+- Diploma in Business Information Technology, Mount Kenya University, Jan 2021 – Sep 2022
+- Certificate in Business Information Technology, Mount Kenya University, May 2018 – Nov 2019
+- Kenya Certificate of Secondary Education (KCSE), Brightstar High School, 2013 – 2017
+- Kenya Certificate of Primary Education (KCPE), Solidarity Primary School, 2004 – 2012
 
-<strong>What my BBIT course entails:</strong><br>
-• Software development & programming<br>
-• Database management & design<br>
-• Networking, IT infrastructure & security<br>
-• Systems analysis & design<br>
-• IT project management<br>
-• IT audit & risk management<br><br>
+WHAT MY COURSE ENTAILS
+My BBIT course includes software development, database design, networking, systems analysis & design, project management, IT audit, IT security, business process integration & management information systems.
 
-<strong>WORK EXPERIENCE</strong><br>
-• Junior Information Technology Attachee, National Housing Corporation (Feb 2025 – May 2025)<br>
-  - Conducted database management, file tracking, data entry, provided IT support, hardware setup, system backups, and preventive maintenance.<br>
-• Junior IT Attachee, National Housing Corporation (May 2022 – Aug 2022)<br>
-  - Supported 100+ users with IT/network issues, reduced downtime by 25%, improved support turnaround by 35%.<br>
-• IT & Marketing Attachee, APRT SACCO (Jan 2020 – Apr 2020)<br>
-  - Implemented OneDrive & SharePoint backups reducing data loss by 30%, led IT procurement lowering costs by 15%, trained staff on IT systems.<br><br>
+WORK EXPERIENCE
+- Junior IT Attachee, National Housing Corporation, Feb 2025 – May 2025
+  • Conducted database management, file tracking, data entry
+  • Provided first-level IT support, set up desktops, configured printers
+  • Performed system backups, preventive maintenance & troubleshooting
+- Junior IT Attachee, NHC, May 2022 – Aug 2022
+  • Supported 100+ users with IT issues, reduced downtime by 25%
+  • Coordinated with teams to improve turnaround by 35%
+- IT & Marketing Attachee, APRT SACCO, Jan 2020 – Apr 2020
+  • Implemented SharePoint backups, reducing data loss by 30%
+  • Led IT procurement, trained 10+ staff, maintained server health
 
-<strong>CERTIFICATIONS</strong><br>
-• Project Management Essentials – Cornerstone On Demand Foundation<br><br>
+CERTIFICATIONS
+- Project Management Essentials – Cornerstone On Demand Foundation
 
-<strong>PERSONAL DETAILS</strong><br>
-• Name: Benjamin Maosa Mosweta<br>
-• Date of Birth: 30th December 1997<br>
-• Nationality: Kenyan<br>
-• Languages: English, Kiswahili<br><br>
+PERSONAL DETAILS
+- Name: Benjamin Maosa Mosweta
+- Date of Birth: 30 Dec 1997
+- Nationality: Kenyan
+- Languages: English, Kiswahili
 
-<strong>PROFESSIONAL ATTRIBUTES</strong><br>
-• Strong analytical and problem-solving abilities<br>
-• Adaptable to dynamic environments and evolving technologies<br>
-• Self-motivated with a result-oriented approach<br>
-• Collaborative team player and dependable independent worker<br><br>
+PROFESSIONAL ATTRIBUTES
+- Strong analytical & problem-solving
+- Adaptable, self-motivated, collaborative team player
 
-<strong>REFERENCES</strong><br>
-• Dr. Mwaniki Solomon, Deputy Director, Mount Kenya University (nairobicenter@mku.ac.ke)<br>
-• Yvonne Mwiti, HR Manager, APRT SACCO (yvonnmwiti@gmail.com)<br>
-• Mr. M. Mauta, Managing Director, NHC (info@nhckenya.go.ke)<br>
-• Mrs. Martha N. Waswa, Colleague, NHC (naliakamartha08@gmail.com)<br>
-• Mr. Clinton Mage, ICT Officer, NHC (clinton@nhc.co.ke)
+REFERENCES
+- Dr. Mwaniki Solomon (Deputy Director, MKU)
+- Yvonne Mwiti (HR, APRT SACCO)
+- Mr. M. Mauta (Managing Director, NHC)
+- Mrs. Martha Waswa (Colleague, NHC)
+- Mr. Clinton Mage (ICT Officer, NHC)
 `;
 
-// Keywords & smart responses
 const keywordMap = [
     { keywords: ["full cv","full resume","all details"], response: () => fullCV },
     { keywords: ["hello","hi","hey"], response: () => "Hello there! 👋 How can I assist you today?" },
     { keywords: ["how are you","whats up"], response: () => "I'm an AI bot, always operational! 😄 What can I do for you?" },
-    { keywords: ["summary"], response: () => "Sure! I'm an IT professional skilled in backend dev, IT support, systems management & more. Want to see my full CV? Type 'full cv'." },
-    { keywords: ["skill","skills","competencies"], response: () => "My core competencies include PHP, HTML, CSS, JavaScript, MySQL, networks, hardware/software maintenance, and more." },
-    { keywords: ["education","study","course"], response: () => "I hold a BBIT Degree, Diploma & Certificate from Mount Kenya University. Ask 'what does your course entail' for details." },
-    { keywords: ["course entail","course content"], response: () => "My BBIT covers software dev, databases, networking, systems analysis, project management, and IT audit & security." },
-    { keywords: ["experience","work","job"], response: () => "I've worked at National Housing Corporation & APRT SACCO handling IT support, database management, and systems training." },
-    { keywords: ["contact","email","phone"], response: () => "📧 Email: benjaminmosweta@gmail.com | ☎️ Phone: +254 798 458 270" },
-    { keywords: ["reference","referee"], response: () => "References include Dr. Mwaniki Solomon (MKU), Yvonne Mwiti (APRT), Mr. Mauta & team at NHC." },
-    { keywords: ["cv","resume","pdf"], response: () => "You can download my CV in PDF format <a href='https://moswettta.github.io/MaosaDevPortfolio/Maosa_CV.pdf' target='_blank' class='text-indigo-600 underline'>here</a>." },
+    { keywords: ["summary"], response: () => "I'm an IT professional skilled in backend dev, IT support, systems management & more. Type 'full cv' to see everything." },
+    { keywords: ["skill","skills","competencies"], response: () => "My core competencies: PHP, HTML, CSS, JavaScript, MySQL, networking, hardware/software maintenance, project coordination, and more." },
+    { keywords: ["education","study","course"], response: () => "I hold a BBIT Degree, Diploma & Certificate from Mount Kenya University. Ask 'what does your course entail'." },
+    { keywords: ["course entail","course content"], response: () => "My BBIT covers software development, database design, networking, systems analysis, IT audit, security & project management." },
+    { keywords: ["experience","work","job"], response: () => "Worked at National Housing Corporation & APRT SACCO handling IT support, database management, and staff training." },
+    { keywords: ["contact","email","phone"], response: () => "📧 Email: benjaminmosweta@gmail.com | ☎️ +254 798 458 270" },
+    { keywords: ["reference","referee"], response: () => "References: Dr. Mwaniki (MKU), Yvonne Mwiti (APRT), Mr. Mauta, Mrs. Waswa, Mr. Mage at NHC." },
     { keywords: ["joke"], response: () => "Why did the computer keep freezing? Because it left its Windows open! 😂" }
 ];
 
@@ -127,7 +121,7 @@ function getResponse(message) {
     const msg = message.toLowerCase();
     for (let entry of keywordMap) {
         if (entry.keywords.some(k => msg.includes(k))) {
-            return entry.response();
+            return typeof entry.response === "function" ? entry.response() : entry.response;
         }
     }
     return "🤔 I’m still learning. Try asking about my skills, work experience, or type 'full cv' to see everything.";
@@ -136,9 +130,7 @@ function getResponse(message) {
 function appendMessage(sender, text) {
     const msgDiv = document.createElement('div');
     msgDiv.classList.add('message', sender);
-    const icon = sender === 'user'
-        ? '<span><i class="fas fa-user"></i></span>'
-        : '<span><i class="fas fa-robot"></i></span>';
+    const icon = sender === 'user' ? '<span><i class="fas fa-user"></i></span>' : '<span><i class="fas fa-robot"></i></span>';
     msgDiv.innerHTML = icon + text;
     chatMessages.appendChild(msgDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -151,7 +143,7 @@ function sendMessage() {
     userInput.value = '';
     setTimeout(() => {
         const reply = getResponse(text);
-        appendMessage('bot', reply);
+        if(reply !== undefined) appendMessage('bot', reply);
     }, 400);
 }
 
