@@ -6,128 +6,105 @@
 <title>Maosa AI Chatbot</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
-    body {
-        font-family: 'Inter', sans-serif;
-        background-color: #e2e8f0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        margin: 0;
-    }
-    .chat-container { background:#fff; border-radius:12px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); width:100%; max-width:420px; height:80vh; display:flex; flex-direction:column; overflow:hidden; }
+    body { font-family:'Inter',sans-serif; background:#e2e8f0; display:flex; justify-content:center; align-items:center; height:100vh; margin:0;}
+    .chat-container { background:#fff; border-radius:12px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); width:100%; max-width:420px; height:80vh; display:flex; flex-direction:column; overflow:hidden;}
     .chat-messages { flex-grow:1; padding:1rem; overflow-y:auto; background:#f8fafc; border-bottom:1px solid #e2e8f0;}
     .message { max-width:80%; padding:0.75rem 1rem; border-radius:1.25rem; margin-bottom:0.75rem; word-wrap:break-word;}
     .message.user {background:#4f46e5; color:#fff; margin-left:auto; border-bottom-right-radius:0.25rem;}
     .message.bot {background:#e0e7ff; color:#1e293b; margin-right:auto; border-bottom-left-radius:0.25rem;}
     .chat-input { display:flex; padding:1rem; border-top:1px solid #e2e8f0;}
-    .chat-input input { flex-grow:1; border:1px solid #cbd5e1; border-radius:9999px; padding:0.75rem 1.25rem; outline:none; transition:border-color 0.2s;}
+    .chat-input input { flex-grow:1; border:1px solid #cbd5e1; border-radius:9999px; padding:0.75rem 1.25rem; outline:none;}
     .chat-input input:focus {border-color:#6366f1;}
-    .chat-input button { background:#4f46e5; color:#fff; border-radius:9999px; padding:0.75rem 1.25rem; margin-left:0.5rem; cursor:pointer; transition:background 0.2s,transform 0.2s;}
-    .chat-input button:hover {background:#4338ca; transform:scale(1.05);}
-    .modal { display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center;}
-    .modal-content {background:#fefefe; padding:30px; border-radius:10px; max-width:350px; text-align:center; position:relative;}
-    .close-button {color:#aaa; position:absolute; top:10px; right:15px; font-size:28px; font-weight:bold; cursor:pointer;}
-    .close-button:hover {color:black;}
-    .loading-dots {display:inline-block; position:relative; width:30px; height:10px;}
-    .loading-dots div {position:absolute; top:0; width:8px; height:8px; border-radius:50%; background:#4f46e5; animation-timing-function:cubic-bezier(0,1,1,0);}
-    .loading-dots div:nth-child(1){left:0;animation:ld1 0.6s infinite;}
-    .loading-dots div:nth-child(2){left:0;animation:ld2 0.6s infinite;}
-    .loading-dots div:nth-child(3){left:16px;animation:ld3 0.6s infinite;}
-    .loading-dots div:nth-child(4){left:32px;animation:ld4 0.6s infinite;}
-    @keyframes ld1{0%{transform:scale(0);}100%{transform:scale(1);}}
-    @keyframes ld3{0%{transform:scale(1);}100%{transform:scale(0);}}
-    @keyframes ld2{0%{transform:translateX(0);}100%{transform:translateX(16px);}}
-    @keyframes ld4{0%{transform:translateX(0);}100%{transform:translateX(16px);}}
+    .chat-input button { background:#4f46e5; color:#fff; border-radius:9999px; padding:0.75rem 1.25rem; margin-left:0.5rem; cursor:pointer;}
+    .chat-input button:hover {background:#4338ca;}
 </style>
 </head>
 <body>
 <div class="chat-container">
     <div class="chat-messages" id="chat-messages">
-        <div class="message bot">Hello! I'm Maosa's AI Assistant. How can I help you today?</div>
+        <div class="message bot">Hello! I'm Maosa's AI Assistant. Ask me about my education, skills, experience, or contacts.</div>
     </div>
     <div class="chat-input">
-        <input type="text" id="user-input" placeholder="Ask me anything..." autocomplete="off">
-        <button id="send-button"><i class="fas fa-paper-plane"></i></button>
+        <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
+        <button id="send-button">Send</button>
     </div>
 </div>
-<div id="messageModal" class="modal hidden">
-    <div class="modal-content">
-        <span class="close-button" onclick="hideMessageModal()">&times;</span>
-        <p id="messageText"></p>
-        <button onclick="hideMessageModal()" class="bg-indigo-500 text-white py-2 px-5 rounded-full hover:bg-indigo-600 transition">OK</button>
-    </div>
-</div>
+
 <script>
 const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
-const messageModal = document.getElementById('messageModal');
-const messageText = document.getElementById('messageText');
 
-function showMessage(msg) {
-    messageText.textContent = msg;
-    messageModal.style.display = 'flex';
+// Your CV data stored as JSON
+const cvData = {
+    name: "Benjamin Maosa Mosweta",
+    email: "benjaminmosweta@gmail.com",
+    phone: "+254 798 458 270",
+    address: "P.O BOX 6566-00300, Nairobi, Kenya",
+    education: [
+        "Bachelor of Business Information Technology (Mount Kenya University, 2023-2025)",
+        "Diploma in Business IT (Mount Kenya University, 2021-2022)",
+        "Certificate in Business IT (Mount Kenya University, 2018-2019)",
+        "KCSE at Brightstar High School (2013-2017)",
+        "KCPE at Solidarity Primary School (2004-2012)"
+    ],
+    skills: [
+        "PHP Backend Development", "Frontend Web Development (HTML, CSS, JavaScript)",
+        "Databases (MySQL)", "Network Installation & Troubleshooting",
+        "Hardware & Software Maintenance", "Microsoft Office", 
+        "Technical Support & Call Center Management",
+        "Project Coordination", "Sales & Marketing Support"
+    ],
+    experience: [
+        "Junior IT Attachee at National Housing Corporation (Feb-May 2025)",
+        "Junior IT Attachee at National Housing Corporation (May-Aug 2022)",
+        "IT & Marketing Attachee at APRT SACCO (Jan-Apr 2020)"
+    ],
+    references: [
+        "Dr. Mwaniki Solomon (Mount Kenya University) - nairobicenter@mku.ac.ke",
+        "Yvonne Mwiti (APRT SACCO) - yvonnmwiti@gmail.com",
+        "Mr. M. Mauta (NHC) - info@nhckenya.go.ke"
+    ]
+};
+
+// Simple matching based on keywords
+function getResponse(message) {
+    const msg = message.toLowerCase();
+    if (msg.includes("name")) return `My name is ${cvData.name}.`;
+    if (msg.includes("email")) return `You can reach me at ${cvData.email}.`;
+    if (msg.includes("phone") || msg.includes("contact")) return `My phone is ${cvData.phone}.`;
+    if (msg.includes("address")) return `My address is ${cvData.address}.`;
+    if (msg.includes("education") || msg.includes("study")) return `Here's my education background:<br>${cvData.education.join("<br>")}`;
+    if (msg.includes("skill") || msg.includes("competencies")) return `These are my core skills:<br>${cvData.skills.join(", ")}`;
+    if (msg.includes("experience") || msg.includes("work")) return `Here’s my work experience:<br>${cvData.experience.join("<br>")}`;
+    if (msg.includes("reference")) return `Here are some of my references:<br>${cvData.references.join("<br>")}`;
+    return "Sorry, I couldn't understand that. Please ask about my education, skills, experience, or contacts.";
 }
-function hideMessageModal() {
-    messageModal.style.display = 'none';
-}
-function appendMessage(sender, html) {
-    const msg = document.createElement('div');
-    msg.classList.add('message', sender);
-    msg.innerHTML = html;
-    chatMessages.appendChild(msg);
+
+// Append messages to chat
+function appendMessage(sender, text) {
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('message', sender);
+    msgDiv.innerHTML = text;
+    chatMessages.appendChild(msgDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
-async function getBotResponse(userMsg) {
-    const loader = document.createElement('div');
-    loader.classList.add('message', 'bot');
-    loader.innerHTML = `<div class="loading-dots"><div></div><div></div><div></div><div></div></div> Searching...`;
-    chatMessages.appendChild(loader);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    try {
-        const query = encodeURIComponent(userMsg);
-        const apiKey = "YOUR_GOOGLE_API_KEY";
-        const cx = "YOUR_SEARCH_ENGINE_ID";
-        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${query}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        chatMessages.removeChild(loader);
-        if (data.items && data.items.length > 0) {
-            let results = "<strong>Here’s what I found:</strong><ul style='padding-left:20px;'>";
-            data.items.slice(0,3).forEach(item => {
-                results += `<li><a href="${item.link}" target="_blank" class="text-indigo-600 underline">${item.title}</a></li>`;
-            });
-            results += "</ul>";
-            appendMessage('bot', results);
-        } else {
-            appendMessage('bot', "Sorry, I couldn't find any results for that.");
-        }
-    } catch (err) {
-        chatMessages.removeChild(loader);
-        appendMessage('bot', "Oops! Could not connect to Google Search.");
-        console.error(err);
-    } finally {
-        userInput.disabled = false;
-        sendButton.disabled = false;
-        userInput.focus();
-    }
-}
+
+// Send message handler
 function sendMessage() {
     const text = userInput.value.trim();
-    if (!text) { showMessage("Please type something to search."); return; }
+    if (!text) return;
     appendMessage('user', text);
     userInput.value = '';
-    userInput.disabled = true;
-    sendButton.disabled = true;
-    getBotResponse(text);
+    setTimeout(() => {
+        const reply = getResponse(text);
+        appendMessage('bot', reply);
+    }, 500); // simulate delay
 }
+
 sendButton.addEventListener('click', sendMessage);
 userInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
-window.onclick = e => { if (e.target == messageModal) hideMessageModal(); }
-window.onload = () => userInput.focus();
 </script>
 </body>
 </html>
