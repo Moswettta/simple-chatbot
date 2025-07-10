@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Maosa AI Chatbot</title>
+<title>Benjamin Maosa AI CV Chatbot</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -26,7 +26,7 @@
 <body>
 <div class="chat-container">
     <div class="chat-messages" id="chat-messages">
-        <div class="message bot"><span><i class="fas fa-robot"></i></span>Hello! I'm Maosa's AI Assistant 🤖<br>Ask me about Benjamin's education, skills, work experience, or say hello!</div>
+        <div class="message bot"><span><i class="fas fa-robot"></i></span>Hello! I'm Benjamin Maosa's AI CV Assistant 🤖<br>Ask me about his skills, education, work experience, or type <strong>"show full cv"</strong> to see everything.</div>
     </div>
     <div class="chat-input">
         <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
@@ -35,77 +35,94 @@
 </div>
 
 <script>
-// === Chat setup ===
 const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
 
-// === Your CV Data (with expanded education) ===
-const cvData = {
-    name: "Benjamin Maosa Mosweta",
-    email: "benjaminmosweta@gmail.com",
-    phone: "+254 798 458 270",
-    address: "P.O BOX 6566-00300, Nairobi, Kenya",
-    education: [
-        "Bachelor of Business Information Technology (Mount Kenya University, 2023-2025)",
-        "Diploma in Business IT (Mount Kenya University, 2021-2022)",
-        "Certificate in Business IT (Mount Kenya University, 2018-2019)",
-        "KCSE at Brightstar High School (2013-2017)",
-        "KCPE at Solidarity Primary School (2004-2012)"
-    ],
-    educationDetails: `My BBIT course covers a blend of IT & business, including:
-    <ul>
-        <li>Software development & programming</li>
-        <li>Database management & design</li>
-        <li>Networking, IT infrastructure & security</li>
-        <li>Systems analysis & design</li>
-        <li>IT project management</li>
-        <li>IT audit & risk management</li>
-    </ul>
-    This equips me to build, manage, and secure business systems, integrate IT into business processes, and support decision-making using data analytics.`,
-    skills: [
-        "PHP Backend Development", "Frontend Web Development (HTML, CSS, JavaScript)",
-        "Databases (MySQL)", "Network Installation & Troubleshooting",
-        "Hardware & Software Maintenance", "Microsoft Office", 
-        "Technical Support & Call Center Management",
-        "Project Coordination", "Sales & Marketing Support"
-    ],
-    experience: [
-        "Junior IT Attachee at National Housing Corporation (Feb-May 2025)",
-        "Junior IT Attachee at National Housing Corporation (May-Aug 2022)",
-        "IT & Marketing Attachee at APRT SACCO (Jan-Apr 2020)"
-    ],
-    references: [
-        "Dr. Mwaniki Solomon (Mount Kenya University) - nairobicenter@mku.ac.ke",
-        "Yvonne Mwiti (APRT SACCO) - yvonnmwiti@gmail.com",
-        "Mr. M. Mauta (NHC) - info@nhckenya.go.ke"
-    ]
-};
+// Full CV Content
+const fullCV = `
+<strong>BENJAMIN MAOSA MOSWETA</strong><br>
+P.O BOX 6566-00300, Nairobi, Kenya<br>
+Mobile: +254 798 458 270 | Email: benjaminmosweta@gmail.com<br><br>
 
-// === Keyword matching (now with course details) ===
+<strong>PROFESSIONAL SUMMARY</strong><br>
+Results-driven IT professional with a solid foundation in Business Information Technology. Skilled in backend development, IT support, and systems management with hands-on experience in corporate environments. Committed to driving efficiency and supporting organizational growth through technical expertise and problem-solving capabilities.<br><br>
+
+<strong>CORE COMPETENCIES</strong><br>
+• PHP Backend Development<br>
+• Frontend Web Development (HTML, CSS, JavaScript)<br>
+• Databases (MySQL)<br>
+• Network Installation & Troubleshooting<br>
+• Computer Hardware & Software Maintenance<br>
+• Microsoft Office Suite<br>
+• Database Management<br>
+• Technical Support & Call Center Management<br>
+• Project Coordination & Documentation<br>
+• Sales and Marketing Support<br>
+• Excellent Communication & Interpersonal Skills<br><br>
+
+<strong>EDUCATION</strong><br>
+• Bachelor of Business Information Technology - Mount Kenya University (Jan 2023 – May 2025)<br>
+• Diploma in Business Information Technology - Mount Kenya University (Jan 2021 – Sep 2022)<br>
+• Certificate in Business Information Technology - Mount Kenya University (May 2018 – Nov 2019)<br>
+• KCSE - Brightstar High School (2013 – 2017)<br>
+• KCPE - Solidarity Primary School (2004 – 2012)<br><br>
+
+<strong>What my BBIT course entails:</strong><br>
+• Software development & programming<br>
+• Database management & design<br>
+• Networking, IT infrastructure & security<br>
+• Systems analysis & design<br>
+• IT project management<br>
+• IT audit & risk management<br><br>
+
+<strong>WORK EXPERIENCE</strong><br>
+• Junior Information Technology Attachee, National Housing Corporation (Feb 2025 – May 2025)<br>
+  - Conducted database management, file tracking, data entry, provided IT support, hardware setup, system backups, and preventive maintenance.<br>
+• Junior IT Attachee, National Housing Corporation (May 2022 – Aug 2022)<br>
+  - Supported 100+ users with IT/network issues, reduced downtime by 25%, improved support turnaround by 35%.<br>
+• IT & Marketing Attachee, APRT SACCO (Jan 2020 – Apr 2020)<br>
+  - Implemented OneDrive & SharePoint backups reducing data loss by 30%, led IT procurement lowering costs by 15%, trained staff on IT systems.<br><br>
+
+<strong>CERTIFICATIONS</strong><br>
+• Project Management Essentials – Cornerstone On Demand Foundation<br><br>
+
+<strong>PERSONAL DETAILS</strong><br>
+• Name: Benjamin Maosa Mosweta<br>
+• Date of Birth: 30th December 1997<br>
+• Nationality: Kenyan<br>
+• Languages: English, Kiswahili<br><br>
+
+<strong>PROFESSIONAL ATTRIBUTES</strong><br>
+• Strong analytical and problem-solving abilities<br>
+• Adaptable to dynamic environments and evolving technologies<br>
+• Self-motivated with a result-oriented approach<br>
+• Collaborative team player and dependable independent worker<br><br>
+
+<strong>REFERENCES</strong><br>
+• Dr. Mwaniki Solomon, Deputy Director, Mount Kenya University (nairobicenter@mku.ac.ke)<br>
+• Yvonne Mwiti, HR Manager, APRT SACCO (yvonnmwiti@gmail.com)<br>
+• Mr. M. Mauta, Managing Director, NHC (info@nhckenya.go.ke)<br>
+• Mrs. Martha N. Waswa, Colleague, NHC (naliakamartha08@gmail.com)<br>
+• Mr. Clinton Mage, ICT Officer, NHC (clinton@nhc.co.ke)
+`;
+
+// Keywords & smart responses
 const keywordMap = [
-    { keywords: ["hello","hi","hey"], response: () => "Hi there! 👋 How can I assist you today?" },
-    { keywords: ["how are you", "whats up", "how do you do"], response: () => "I'm doing great, thanks for asking! 🤖 How can I help you?" },
-    { keywords: ["joke", "fun"], response: () => "Why do programmers prefer dark mode? Because the light attracts bugs! 😄" },
-    { keywords: ["who made you","creator"], response: () => "I was proudly created by Benjamin Maosa Mosweta as part of his portfolio." },
-    { keywords: ["name", "who are you"], response: () => `My name is ${cvData.name}.` },
-    { keywords: ["email", "gmail"], response: () => `You can reach me at ${cvData.email}.` },
-    { keywords: ["phone", "mobile", "contact"], response: () => `My phone number is ${cvData.phone}.` },
-    { keywords: ["address", "live", "location"], response: () => `I live at ${cvData.address}.` },
-    { keywords: ["education details","course content","what does your course"], response: () => cvData.educationDetails },
-    { keywords: ["education", "school", "study", "degree", "diploma", "certificate"], response: () =>
-        `Here’s my education:<br>${cvData.education.join("<br>")}<br><br>Want to know what my course entails? Just ask "What does your course entail?"` },
-    { keywords: ["skill", "know", "competency"], response: () =>
-        `These are my core skills:<br>${cvData.skills.join(", ")}` },
-    { keywords: ["experience", "job", "work", "position"], response: () =>
-        `Here’s my work experience:<br>${cvData.experience.join("<br>")}` },
-    { keywords: ["reference", "referee"], response: () =>
-        `Here are my references:<br>${cvData.references.join("<br>")}` },
-    { keywords: ["cv", "resume", "pdf"], response: () =>
-        `Sure! You can <a href="https://moswettta.github.io/MaosaDevPortfolio/Maosa_CV.pdf" target="_blank" class="text-indigo-600 underline">click here to download my CV in PDF format</a>.` }
+    { keywords: ["full cv","full resume","all details"], response: () => fullCV },
+    { keywords: ["hello","hi","hey"], response: () => "Hello there! 👋 How can I assist you today?" },
+    { keywords: ["how are you","whats up"], response: () => "I'm an AI bot, always operational! 😄 What can I do for you?" },
+    { keywords: ["summary"], response: () => "Sure! I'm an IT professional skilled in backend dev, IT support, systems management & more. Want to see my full CV? Type 'full cv'." },
+    { keywords: ["skill","skills","competencies"], response: () => "My core competencies include PHP, HTML, CSS, JavaScript, MySQL, networks, hardware/software maintenance, and more." },
+    { keywords: ["education","study","course"], response: () => "I hold a BBIT Degree, Diploma & Certificate from Mount Kenya University. Ask 'what does your course entail' for details." },
+    { keywords: ["course entail","course content"], response: () => "My BBIT covers software dev, databases, networking, systems analysis, project management, and IT audit & security." },
+    { keywords: ["experience","work","job"], response: () => "I've worked at National Housing Corporation & APRT SACCO handling IT support, database management, and systems training." },
+    { keywords: ["contact","email","phone"], response: () => "📧 Email: benjaminmosweta@gmail.com | ☎️ Phone: +254 798 458 270" },
+    { keywords: ["reference","referee"], response: () => "References include Dr. Mwaniki Solomon (MKU), Yvonne Mwiti (APRT), Mr. Mauta & team at NHC." },
+    { keywords: ["cv","resume","pdf"], response: () => "You can download my CV in PDF format <a href='https://moswettta.github.io/MaosaDevPortfolio/Maosa_CV.pdf' target='_blank' class='text-indigo-600 underline'>here</a>." },
+    { keywords: ["joke"], response: () => "Why did the computer keep freezing? Because it left its Windows open! 😂" }
 ];
 
-// === Response logic ===
 function getResponse(message) {
     const msg = message.toLowerCase();
     for (let entry of keywordMap) {
@@ -113,10 +130,9 @@ function getResponse(message) {
             return entry.response();
         }
     }
-    return "🤔 Hmm... I’m still learning. Try asking about my education, skills, or maybe say hello!";
+    return "🤔 I’m still learning. Try asking about my skills, work experience, or type 'full cv' to see everything.";
 }
 
-// === Chat functions ===
 function appendMessage(sender, text) {
     const msgDiv = document.createElement('div');
     msgDiv.classList.add('message', sender);
@@ -139,7 +155,6 @@ function sendMessage() {
     }, 400);
 }
 
-// === Listeners ===
 sendButton.addEventListener('click', sendMessage);
 userInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
 </script>
