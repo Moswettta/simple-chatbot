@@ -26,7 +26,7 @@
 <body>
 <div class="chat-container">
     <div class="chat-messages" id="chat-messages">
-        <div class="message bot"><span><i class="fas fa-robot"></i></span>Hello! I'm Maosa's AI Assistant 🤖<br>Ask me about my education, skills, experience, contacts, or request my CV PDF.</div>
+        <div class="message bot"><span><i class="fas fa-robot"></i></span>Hello! I'm Maosa's AI Assistant 🤖<br>Ask me about Benjamin's education, skills, work experience, or say hello!</div>
     </div>
     <div class="chat-input">
         <input type="text" id="user-input" placeholder="Type your question..." autocomplete="off">
@@ -40,7 +40,7 @@ const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
 
-// === Your CV Data ===
+// === Your CV Data (with expanded education) ===
 const cvData = {
     name: "Benjamin Maosa Mosweta",
     email: "benjaminmosweta@gmail.com",
@@ -53,6 +53,16 @@ const cvData = {
         "KCSE at Brightstar High School (2013-2017)",
         "KCPE at Solidarity Primary School (2004-2012)"
     ],
+    educationDetails: `My BBIT course covers a blend of IT & business, including:
+    <ul>
+        <li>Software development & programming</li>
+        <li>Database management & design</li>
+        <li>Networking, IT infrastructure & security</li>
+        <li>Systems analysis & design</li>
+        <li>IT project management</li>
+        <li>IT audit & risk management</li>
+    </ul>
+    This equips me to build, manage, and secure business systems, integrate IT into business processes, and support decision-making using data analytics.`,
     skills: [
         "PHP Backend Development", "Frontend Web Development (HTML, CSS, JavaScript)",
         "Databases (MySQL)", "Network Installation & Troubleshooting",
@@ -72,14 +82,19 @@ const cvData = {
     ]
 };
 
-// === Smart matching keywords ===
+// === Keyword matching (now with course details) ===
 const keywordMap = [
+    { keywords: ["hello","hi","hey"], response: () => "Hi there! 👋 How can I assist you today?" },
+    { keywords: ["how are you", "whats up", "how do you do"], response: () => "I'm doing great, thanks for asking! 🤖 How can I help you?" },
+    { keywords: ["joke", "fun"], response: () => "Why do programmers prefer dark mode? Because the light attracts bugs! 😄" },
+    { keywords: ["who made you","creator"], response: () => "I was proudly created by Benjamin Maosa Mosweta as part of his portfolio." },
     { keywords: ["name", "who are you"], response: () => `My name is ${cvData.name}.` },
     { keywords: ["email", "gmail"], response: () => `You can reach me at ${cvData.email}.` },
     { keywords: ["phone", "mobile", "contact"], response: () => `My phone number is ${cvData.phone}.` },
     { keywords: ["address", "live", "location"], response: () => `I live at ${cvData.address}.` },
+    { keywords: ["education details","course content","what does your course"], response: () => cvData.educationDetails },
     { keywords: ["education", "school", "study", "degree", "diploma", "certificate"], response: () =>
-        `Here’s my education:<br>${cvData.education.join("<br>")}` },
+        `Here’s my education:<br>${cvData.education.join("<br>")}<br><br>Want to know what my course entails? Just ask "What does your course entail?"` },
     { keywords: ["skill", "know", "competency"], response: () =>
         `These are my core skills:<br>${cvData.skills.join(", ")}` },
     { keywords: ["experience", "job", "work", "position"], response: () =>
@@ -90,7 +105,7 @@ const keywordMap = [
         `Sure! You can <a href="https://moswettta.github.io/MaosaDevPortfolio/Maosa_CV.pdf" target="_blank" class="text-indigo-600 underline">click here to download my CV in PDF format</a>.` }
 ];
 
-// === Function to get response ===
+// === Response logic ===
 function getResponse(message) {
     const msg = message.toLowerCase();
     for (let entry of keywordMap) {
@@ -98,10 +113,10 @@ function getResponse(message) {
             return entry.response();
         }
     }
-    return "Sorry, I didn't quite get that. Try asking about my education, skills, experience, contacts or say 'send me your CV'.";
+    return "🤔 Hmm... I’m still learning. Try asking about my education, skills, or maybe say hello!";
 }
 
-// === Append message to chat ===
+// === Chat functions ===
 function appendMessage(sender, text) {
     const msgDiv = document.createElement('div');
     msgDiv.classList.add('message', sender);
@@ -113,7 +128,6 @@ function appendMessage(sender, text) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// === Handle send ===
 function sendMessage() {
     const text = userInput.value.trim();
     if (!text) return;
@@ -122,7 +136,7 @@ function sendMessage() {
     setTimeout(() => {
         const reply = getResponse(text);
         appendMessage('bot', reply);
-    }, 500);
+    }, 400);
 }
 
 // === Listeners ===
